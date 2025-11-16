@@ -1,0 +1,10 @@
+# Python temporary files
+__pycache__/
+*.pyc
+
+# Flask/database files
+flask_session/
+tracker.db
+
+# Environment variables
+.env
