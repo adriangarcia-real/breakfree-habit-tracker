@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Add Habit
+{% endblock %}
+
+{% block main %}
+<div class="d-flex justify-content-center">
+    <div class="card-gamify add-habit-card shadow-lg">
+
+        <h2 class="text-center add-habit-title mb-4">Add New Habit</h2>
+
+        <form action="/add_habit" method="post">
+
+            <div class="mb-3">
+                <input type="text" name="habit_name" placeholder="Habit Name"
+                    class="form-control form-control-dark text-center" required maxlength="50" autofocus>
+            </div>
+
+            <button type="submit" class="btn btn-gamify w-100 mt-3 add-habit-btn">Add Habit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Edit Entry
+{% endblock %}
+
+{% block main %}
+<div class="d-flex justify-content-center">
+    <div class="card-gamify add-entry-card shadow-lg">
+
+        <h2 class="add-entry-title mb-4">Edit Log for: {{ entry.habit_name }}</h2>
+
+        <form action="/edit_entry/{{ entry.id }}" method="post">
+
+            <label class="form-label entry-label">Did you succeed on {{ entry.date }}?</label>
+            <div class="radio-group mb-4">
+
+                <label class="radio-option">
+                    <input type="radio" name="success" value="1" required {% if entry.success==1 %}checked{% endif %}>
+                    <span>✅ Yes</span>
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="success" value="0" required {% if entry.success==0 %}checked{% endif %}>
+                    <span>❌ No</span>
+                </label>
+            </div>
+
+            <label class="form-label entry-label">How did you feel that day?</label>
+            <select name="mood" class="form-select form-select-dark mb-4" required>
+                <option disabled value="">Mood</option>
+
+                {% set current_mood = entry.mood %}
+
+                <option value="happy" {% if current_mood=="happy" %}selected{% endif %}>😄 Happy</option>
+                <option value="sad" {% if current_mood=="sad" %}selected{% endif %}>😢 Sad</option>
+                <option value="neutral" {% if current_mood=="neutral" %}selected{% endif %}>😐 Neutral</option>
+                <option value="anxious" {% if current_mood=="anxious" %}selected{% endif %}>😰 Anxious</option>
+                <option value="calm" {% if current_mood=="calm" %}selected{% endif %}>😌 Calm</option>
+            </select>
+
+            <label class="form-label entry-label">Journal entry:</label>
+            <textarea name="journal" class="entry-textarea" placeholder="Write your thoughts..." required
+                minlength="5">{{ entry.journal }}</textarea>
+
+            <button type="submit" class="btn btn-warning w-100 mt-4 register-btn">💾 Update Entry</button>
+
+            <a href="/habit_history/{{ entry.habit_id }}" class="btn btn-outline-light w-100 mt-2">Cancel</a>
+
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block main %}
+<div class="dashboard-container py-5">
+    <h1 class="text-center dashboard-title mb-5">Your BreakFree Dashboard</h1>
+
+    <div class="row g-4 justify-content-center">
+        {% for habit in habits %}
+        <div class="col-md-6 col-lg-4">
+            <div class="habit-card p-3 shadow-lg">
+                <h3 class="habit-name">
+                    {{ habit.habit_name }}
+                    {% if habit.recent_entry and habit.recent_entry.date == today %}
+                    {% if habit.recent_entry.success == 1 %}
+                    <span class="badge bg-success neon-badge">CLEAN! ✅</span>
+                    {% else %}
+                    <span class="badge bg-danger neon-badge">RELAPSE ❌</span>
+                    {% endif %}
+                    {% elif habit.current_streak > 0 and habit.recent_entry.date == yesterday %}
+                    <span class="badge bg-warning neon-badge">PENDING...</span>
+                    {% endif %}
+                </h3>
+                <p class="streak">🔥 Current Streak: {{ habit.current_streak }} day(s)</p>
+                <p class="streak">🏆 Longest Streak: {{ habit.longest_streak }} day(s)</p>
+                <p class="points"><strong>Points:</strong> {{ habit.current_streak * 10 }} pts</p>
+                <p class="mood"><strong>Latest Mood:</strong>
+                    {% if habit.entries|length > 0 and habit.entries[0].mood %}
+                    {% set mood = habit.entries[0].mood %}
+                    {% if mood == "happy" %} 😁 Happy
+                    {% elif mood == "sad" %} 😔 Sad
+                    {% elif mood == "neutral" %} 😐 Neutral
+                    {% elif mood == "anxious" %} 😟 Anxious
+                    {% elif mood == "calm" %} 😌 Calm
+                    {% else %} {{ mood }}
+                    {% endif %}
+                    {% else %} N/A
+                    {% endif %}
+                </p>
+                <p class="journal"><strong>Latest Journal:</strong>
+                    {% if habit.entries|length > 0 and habit.entries[0].journal %}
+                    {{ habit.entries[0].journal[:50] }}{% if habit.entries[0].journal|length > 50 %}...{% endif %}
+                    {% else %} N/A {% endif %}
+                </p>
+
+                <div class="d-flex justify-content-around flex-wrap mt-3">
+                    <a href="/add_entry/{{ habit.id }}" class="btn btn-gamify btn-dashboard">Add Entry</a>
+                    <a href="/habit_history/{{ habit.id }}" class="btn btn-outline-light btn-dashboard">View History</a>
+
+                    {% if habit.recent_entry and habit.recent_entry.date == today %}
+                    <a href="/edit_entry/{{ habit.recent_entry.id }}" class="btn btn-warning btn-dashboard">Edit
+                        Today</a>
+                    {% endif %}
+
+                    <button type="button" class="btn btn-danger btn-dashboard delete-btn" data-habit-id="{{ habit.id }}"
+                        data-habit-name="{{ habit.habit_name }}">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-center mt-5">
+            You have no habits yet. <a href="/add_habit" class="text-decoration-none text-info">Add one to get
+                started!</a>
+        </p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Single Delete Modal -->
+<div class="modal fade" id="deleteHabitModal" tabindex="-1" aria-labelledby="deleteHabitLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteHabitLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="habitMessage">Are you sure you want to delete this habit?</p>
+                <p class="text-danger"><small>Warning: This will delete all associated entries permanently!</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteHabitForm" method="POST" action="">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".delete-btn");
+        const modal = new bootstrap.Modal(document.getElementById("deleteHabitModal"));
+        const form = document.getElementById("deleteHabitForm");
+        const message = document.getElementById("habitMessage");
+
+        deleteButtons.forEach(btn => {
+            btn.addEventListener("click", function () {
+                const habitId = this.dataset.habitId;
+                const habitName = this.dataset.habitName;
+                form.action = `/delete_habit/${habitId}`;
+                message.textContent = `Are you sure you want to delete the habit "${habitName}"? This will delete all associated entries.`;
+                modal.show();
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Register
+{% endblock %}
+
+{% block main %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="card-gamify register-card shadow-lg p-4" style="max-width: 400px; width: 100%;">
+        <h2 class="text-center mb-4 register-title">Create Account</h2>
+
+        <form action="/register" method="post">
+
+            <div class="mb-3">
+                <input autocomplete="off" autofocus class="form-control form-control-dark text-center" name="username"
+                    placeholder="Username" type="text" required>
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control form-control-dark text-center" name="password" placeholder="Password"
+                    type="password" required>
+            </div>
+
+            <div class="mb-3">
+                <input class="form-control form-control-dark text-center" name="confirmation"
+                    placeholder="Confirm Password" type="password" required>
+            </div>
+
+            <button class="btn btn-gamify w-100 mt-3" type="submit">Register</button>
+        </form>
+
+        <p class="text-center mt-3">
+            Already have an account? <a href="/login" class="text-decoration-none text-info">Log In</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
