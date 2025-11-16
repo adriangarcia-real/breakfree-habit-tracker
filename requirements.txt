@@ -7,7 +7,6 @@ cachelib==0.13.0
 certifi==2020.6.20
 chardet==4.0.0
 click==8.3.0
-cloud-init==25.2
 colorama==0.4.4
 command-not-found==0.3
 configobj==5.0.6
